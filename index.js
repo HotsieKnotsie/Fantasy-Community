@@ -99,8 +99,58 @@ bot.on("message", async message => {
 
         let kickChannel = message.guild.channels.find("name", "mod-logs");
         if (!kickChannel) return message.channel.send("Kan het channel niet vinden");
+        message.channel.send(({
+            embed: {
+                color: 0xec4040,
+                description: `${kUser.user.username} is gekickt`
+            }
+        }));
         message.guild.member(kUser).kick(kReason);
         kickChannel.send(kickEmbed);
+
+        return;
+    }
+
+    if (command === `${prefix}warn`) {
+
+        if (!message.member.roles.some(r => [`${modrole}`].includes(r.name)))
+            return message.channel.send(({
+                embed: {
+                    color: 0xec4040,
+                    description: `Je kunt dit niet.`
+                }
+            })).then(msg => { msg.delete(3000) }).then(message.delete(3000));
+        let wUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(arguments[0]));
+        if (!wUser) return message.channel.send(({
+            embed: {
+                color: 0xec4040,
+                description: `Kan gebruiker niet vinden.`
+            }
+        })).then(msg => { msg.delete(3000) }).then(message.delete(3000));
+        let wReason = arguments.join(" ").slice(22);
+        if (wUser.hasPermission("MANAGE_MESSAGES")) return message.channel.send(({
+            embed: {
+                color: 0xec4040,
+                description: `Je kunt die gebruiker niet warnen.`
+            }
+        })).then(msg => { msg.delete(3000) }).then(message.delete(3000));
+
+        let warnEmbed = new discord.RichEmbed()
+        .setTitle("Iemand heeft zijn stoute schoenen gedragen!!!")
+        .setColor("ff0000")
+        .setFooter(`Speler gewarnt`, `${wUser.user.displayAvatarURL}`)
+        .setTimestamp()
+        .addField("_ _", `**Uitvoerder:** ${message.author.username}\n**Doelwit**: ${wUser.user.username}\n**Reden:** ${wReason}\n**Actie:** WARN`);
+
+        let warnChannel = message.guild.channels.find("name", "mod-logs");
+        if (!warnChannel) return message.channel.send("Kan het channel niet vinden");
+        message.channel.send(({
+            embed: {
+                color: 0xec4040,
+                description: `${wUser.user.username} is gewarnt`
+            }
+        }));
+        warnChannel.send(warnEmbed);
 
         return;
     }
@@ -138,6 +188,12 @@ bot.on("message", async message => {
         
         let banChannel = message.guild.channels.find("name", "mod-logs");
         if (!banChannel) return message.channel.send("Kan het channel niet vinden");
+        message.channel.send(({
+            embed: {
+                color: 0xec4040,
+                description: `${bUser.user.username} is gebant`
+            }
+        }));
         message.guild.member(bUser).ban(bReason);
         banChannel.send(banEmbed);
 
@@ -182,6 +238,12 @@ bot.on("message", async message => {
         .addField("_ _", `**Uitvoerder:** ${message.author.username}\n**Doelwit**: ${toMute.user.username}\n**Reden:** ${mReason}\n**Actie:** MUTE`);
         
         await toMute.addRole(role);
+        message.channel.send(({
+            embed: {
+                color: 0xec4040,
+                description: `${toMute.user.username} is gemute`
+            }
+        }));
         muteChannel.send(muteEmbed); 
 
         return;
@@ -218,6 +280,12 @@ bot.on("message", async message => {
         .addField("_ _", `**Uitvoerder:** ${message.author.username}\n**Doelwit**: ${tounMute.user.username}\n**Reden:** ${unmReason}\n**Actie:** UNMUTE`);
         
         await tounMute.removeRole(role);
+        message.channel.send(({
+            embed: {
+                color: 0xec4040,
+                description: `${tounMute.user.username} is geunmute`
+            }
+        }));
         unmuteChannel.send(unmuteEmbed); 
 
         return;
