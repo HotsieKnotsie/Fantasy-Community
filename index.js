@@ -359,6 +359,15 @@ bot.on("message", async message => {
         message.channel.send(messageembed);
         message.delete("!message");
     }
+
+    if (command === `${prefix}ip`) {
+        message.channel.send(({
+            embed: {
+                color: 0xec4040,
+                description: `Ip: Play.fantasyServer.eu\nVersie: 1.9x`
+            }
+        }))
+    }
     
 });
 
